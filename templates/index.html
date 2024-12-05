@@ -1,9 +1,10 @@
-{% extends "base.html" %}
-
-{% block title %}Inicio{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>Bienvenido a Educación Más Fácil</h1>
-<p>Tu plataforma para una educación más accesible y efectiva.</p>
+    <h1 class="mt-5 text-center">Bienvenido a Educacion mas facil</h1>
+    <p class="lead text-center">Explora nuestras funciones y mejora tu aprendizaje con  nosotros</p>
+    <div class="text-center">
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Iniciar sesión</a>
+        <a href="{{ url_for('register') }}" class="btn btn-success">Registrar cuenta</a>
+    </div>    
 {% endblock %}
-

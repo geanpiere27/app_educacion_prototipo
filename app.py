@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm, RegistrationForm, EditProfileForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'clave_secreta_segura'
@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
+    profile_picture = db.Column(db.String(150), default='default.jpg')
 
 
 @login_manager.user_loader
@@ -70,6 +71,30 @@ def dashboard():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@app.route('/settings')
+@login_required
+def settings():
+    return render_template('settings.html')
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash('Perfil actualizado exitosamente.')
+        return redirect(url_for('dashboard'))
+    return render_template('edit_profile.html', form=form)
 
 
 # PWA: servir el service worker
